@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ThesisApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a897eb711efeff01c8ce8815900a12bb44e2942")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8139803022fa3a686ff77e63e2f3087089511aec")]
 [assembly: System.Reflection.AssemblyProductAttribute("ThesisApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ThesisApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

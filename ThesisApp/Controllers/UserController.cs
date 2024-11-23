@@ -52,5 +52,35 @@ namespace ThesisApp.Controllers
 
             return Ok(user);
         }
+
+        [HttpGet("/Students")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(400)]
+        public IActionResult GetStudents()
+        {
+            var users = _mapper.Map<List<UserDTO>>(_userRepository.GetStudents());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(users);
+        }
+
+        [HttpGet("/Lecturers")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(400)]
+        public IActionResult GetLecturers()
+        {
+            var users = _mapper.Map<List<UserDTO>>(_userRepository.GetLecturers());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(users);
+        }
     }
 }

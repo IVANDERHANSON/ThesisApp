@@ -26,5 +26,15 @@ namespace ThesisApp.Repositories
         {
             return _dataContext.Users.Any(u => u.id == id);
         }
+
+        public ICollection<User> GetStudents()
+        {
+            return _dataContext.Users.Where(u => u.Role == "Student").OrderBy(u => u.id).ToList();
+        }
+
+        public ICollection<User> GetLecturers()
+        {
+            return _dataContext.Users.Where(u => u.Role == "Lecturer").OrderBy(u => u.id).ToList();
+        }
     }
 }

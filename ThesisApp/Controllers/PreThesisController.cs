@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using ThesisApp.DTO;
 using ThesisApp.Interfaces;
 using ThesisApp.Models;
 using ThesisApp.Repositories;
@@ -10,16 +12,19 @@ namespace ThesisApp.Controllers
     public class PreThesisController : Controller
     {
         private readonly IPreThesisRepository _preThesisRepository;
-        public PreThesisController(IPreThesisRepository preThesisRepository)
+        private readonly IMapper _mapper;
+
+        public PreThesisController(IPreThesisRepository preThesisRepository, IMapper mapper)
         {
             _preThesisRepository = preThesisRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<PreThesis>))]
         public IActionResult GetPreTheses()
         {
-            var preTheses = _preThesisRepository.GetPreTheses();
+            var preTheses = _mapper.Map<List<PreThesisDTO>>(_preThesisRepository.GetPreTheses());
 
             if (!ModelState.IsValid)
             {
@@ -39,7 +44,7 @@ namespace ThesisApp.Controllers
                 return NotFound();
             }
 
-            var preThesis = _preThesisRepository.GetPreThesis(id);
+            var preThesis = _mapper.Map<PreThesisDTO>(_preThesisRepository.GetPreThesis(id));
 
             if (!ModelState.IsValid)
             {

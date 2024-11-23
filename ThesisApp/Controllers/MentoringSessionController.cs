@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using ThesisApp.DTO;
 using ThesisApp.Interfaces;
 using ThesisApp.Models;
 using ThesisApp.Repositories;
@@ -10,16 +12,19 @@ namespace ThesisApp.Controllers
     public class MentoringSessionController : Controller
     {
         private readonly IMentoringSessionRepository _mentoringSessionRepository;
-        public MentoringSessionController(IMentoringSessionRepository mentoringSessionRepository)
+        private readonly IMapper _mapper;
+
+        public MentoringSessionController(IMentoringSessionRepository mentoringSessionRepository, IMapper mapper)
         {
             _mentoringSessionRepository = mentoringSessionRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<MentoringSession>))]
         public IActionResult GetMentoringSessions()
         {
-            var mentoringSessions = _mentoringSessionRepository.GetMentoringSessions();
+            var mentoringSessions = _mapper.Map<List<MentoringSessionDTO>>(_mentoringSessionRepository.GetMentoringSessions());
 
             if (!ModelState.IsValid)
             {
@@ -39,7 +44,7 @@ namespace ThesisApp.Controllers
                 return NotFound();
             }
 
-            var mentoringSession = _mentoringSessionRepository.GetMentoringSession(id);
+            var mentoringSession = _mapper.Map<MentoringSessionDTO>(_mentoringSessionRepository.GetMentoringSession(id));
 
             if (!ModelState.IsValid)
             {

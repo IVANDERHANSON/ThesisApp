@@ -8,6 +8,18 @@ namespace ThesisApp.Helper
     {
         public MappingProfiles()
         {
+            CreateMap<User, UserDTO>();
+            CreateMap<UserDTO, User>();
+
+            CreateMap<PreThesis, PreThesisDTO>();
+            CreateMap<PreThesisDTO, PreThesis>();
+
+            CreateMap<MentorPair, MentorPairDTO>();
+            CreateMap<MentorPairDTO, MentorPair>();
+
+            CreateMap<MentoringSession, MentoringSessionDTO>();
+            CreateMap<MentoringSessionDTO, MentoringSession>();
+
             CreateMap<Thesis, ThesisDTO>();
             CreateMap<ThesisDTO, Thesis>();
 

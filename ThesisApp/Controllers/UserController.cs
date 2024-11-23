@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using ThesisApp.DTO;
 using ThesisApp.Interfaces;
 using ThesisApp.Models;
 
@@ -9,16 +11,19 @@ namespace ThesisApp.Controllers
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
-        public UserController(IUserRepository userRepository)
+        private readonly IMapper _mapper;
+
+        public UserController(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
         public IActionResult GetUsers()
         {
-            var users = _userRepository.GetUsers();
+            var users = _mapper.Map<List<UserDTO>>(_userRepository.GetUsers());
 
             if (!ModelState.IsValid)
             {
@@ -38,7 +43,7 @@ namespace ThesisApp.Controllers
                 return NotFound();
             }
 
-            var user = _userRepository.GetUser(id);
+            var user = _mapper.Map<UserDTO>(_userRepository.GetUser(id));
 
             if (!ModelState.IsValid)
             {

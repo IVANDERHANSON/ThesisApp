@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using ThesisApp.DTO;
 using ThesisApp.Interfaces;
 using ThesisApp.Models;
 using ThesisApp.Repositories;
@@ -10,16 +12,19 @@ namespace ThesisApp.Controllers
     public class MentorPairController : Controller
     {
         private readonly IMentorPairRepository _mentorPairRepository;
-        public MentorPairController(IMentorPairRepository mentorPairRepository)
+        private readonly IMapper _mapper;
+
+        public MentorPairController(IMentorPairRepository mentorPairRepository, IMapper mapper)
         {
             _mentorPairRepository = mentorPairRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [ProducesResponseType(200, Type = typeof(IEnumerable<MentorPair>))]
         public IActionResult GetMentorPairs()
         {
-            var mentorPairs = _mentorPairRepository.GetMentorPairs();
+            var mentorPairs = _mapper.Map<List<MentorPairDTO>>(_mentorPairRepository.GetMentorPairs());
 
             if (!ModelState.IsValid)
             {
@@ -39,7 +44,7 @@ namespace ThesisApp.Controllers
                 return NotFound();
             }
 
-            var mentorPair = _mentorPairRepository.GetMentorPair(id);
+            var mentorPair = _mapper.Map<MentorPairDTO>(_mentorPairRepository.GetMentorPair(id));
 
             if (!ModelState.IsValid)
             {

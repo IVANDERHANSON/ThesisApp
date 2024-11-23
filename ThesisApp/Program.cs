@@ -23,7 +23,17 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ThesisAppFE", policy =>
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyMethod()
+              .AllowAnyHeader());
+});
+
 var app = builder.Build();
+
+app.UseCors("ThesisAppFE");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

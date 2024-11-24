@@ -30,7 +30,7 @@ namespace ThesisApp.Repositories
 
         public ICollection<User> GetStudents()
         {
-            return _dataContext.Users.Where(u => u.Role == "Student" && u.PreThesis.StudentId == u.id && u.Thesis.StudentId == u.id).Include(u => u.PreThesis).Include(u => u.Thesis).OrderBy(u => u.id).ToList();
+            return _dataContext.Users.Where(u => u.Role == "Student" || u.PreThesis.StudentId == u.id || u.Thesis.StudentId == u.id).Include(u => u.PreThesis).Include(u => u.Thesis).OrderBy(u => u.id).ToList();
         }
 
         public ICollection<User> GetLecturers()

@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ThesisApp.Models
+﻿namespace ThesisApp.Models
 {
     public class User
     {
@@ -9,10 +7,8 @@ namespace ThesisApp.Models
         public string Password { get; set; }
         public string Role { get; set; }
 
-        [JsonIgnore]
         public PreThesis PreThesis { get; set; }
         public MentorPair MentorPair { get; set; }
-        [JsonIgnore]
         public Thesis Thesis { get; set; }
         public ThesisDefence ThesisDefenceForMentor { get; set; }
         public ThesisDefence ThesisDefenceForExaminer { get; set; }

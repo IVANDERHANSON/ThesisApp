@@ -6,5 +6,7 @@
         public int StudentId { get; set; }
         public string PreThesisName { get; set; }
         public string PreThesisLink { get; set; }
+
+        public MentorPairDTO MentorPair { get; set; }
     }
 }

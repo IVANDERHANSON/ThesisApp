@@ -53,5 +53,40 @@ namespace ThesisApp.Controllers
 
             return Ok(mentorPair);
         }
+
+        [HttpGet("/api/MentorPair/get-student/{preThesisId}")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(400)]
+        public IActionResult GetStudent(int preThesisId)
+        {
+            var user = _mapper.Map<UserDTO>(_mentorPairRepository.GetStudent(preThesisId));
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(user);
+        }
+
+        [HttpGet("/api/MentorPair/get-mentor-lecturers")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetMentorLecturers()
+        {
+            var users = _mapper.Map<List<UserDTO>>(_mentorPairRepository.GetMentorLecturers());
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(users);
+        }
     }
 }

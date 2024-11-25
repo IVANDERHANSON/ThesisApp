@@ -12,11 +12,13 @@ namespace ThesisApp.Controllers
     public class MentoringSessionController : Controller
     {
         private readonly IMentoringSessionRepository _mentoringSessionRepository;
+        private readonly IMentorPairRepository _mentorPairRepository;
         private readonly IMapper _mapper;
 
-        public MentoringSessionController(IMentoringSessionRepository mentoringSessionRepository, IMapper mapper)
+        public MentoringSessionController(IMentoringSessionRepository mentoringSessionRepository, IMentorPairRepository mentorPairRepository, IMapper mapper)
         {
             _mentoringSessionRepository = mentoringSessionRepository;
+            _mentorPairRepository = mentorPairRepository;
             _mapper = mapper;
         }
 
@@ -52,6 +54,26 @@ namespace ThesisApp.Controllers
             }
 
             return Ok(mentoringSession);
+        }
+
+        [HttpGet("/api/MentoringSession/mentor-pair/{mentorPairId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<MentoringSession>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetMentoringSessionsByMentorPairId(int mentorPairId)
+        {
+            if (!_mentorPairRepository.MentorPairExists(mentorPairId))
+            {
+                return NotFound();
+            }
+
+            var mentoringSessions = _mapper.Map<List<MentoringSessionDTO>>(_mentoringSessionRepository.GetMentoringSessionsByMentorPairId(mentorPairId));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(mentoringSessions);
         }
     }
 }

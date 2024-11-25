@@ -26,5 +26,10 @@ namespace ThesisApp.Repositories
         {
             return _dataContext.MentoringSessions.Any(ms => ms.id == id);
         }
+
+        public ICollection<MentoringSession> GetMentoringSessionsByMentorPairId(int mentorPairId)
+        {
+            return _dataContext.MentoringSessions.Where(ms => ms.MentorPairId == mentorPairId).OrderBy(ms => ms.id).ToList();
+        }
     }
 }

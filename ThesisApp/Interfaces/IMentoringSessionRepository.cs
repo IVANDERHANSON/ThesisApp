@@ -7,5 +7,6 @@ namespace ThesisApp.Interfaces
         ICollection<MentoringSession> GetMentoringSessions();
         MentoringSession GetMentoringSession(int id);
         bool MentoringSessionExists(int id);
+        ICollection<MentoringSession> GetMentoringSessionsByMentorPairId(int mentorPairId);
     }
 }

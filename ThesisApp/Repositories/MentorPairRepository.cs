@@ -43,5 +43,23 @@ namespace ThesisApp.Repositories
         {
             return _dataContext.Users.Where(u => u.Role == "Lecturer" && u.MentorPair.MentorLecturerId != u.id).OrderBy(u => u.id).ToList();
         }
+
+        public bool CreateMentorPair(MentorPair mentorPair)
+        {
+            if (!_dataContext.MentorPairs.Any(mp => mp.PreThesisId == mentorPair.PreThesisId) && !_dataContext.MentorPairs.Any(mp => mp.MentorLecturerId == mentorPair.MentorLecturerId))
+            {
+                _dataContext.Add(mentorPair);
+                return Save();
+            } else
+            {
+                return false;
+            }
+        }
+
+        public bool Save()
+        {
+            var saved = _dataContext.SaveChanges();
+            return saved > 0 ? true : false;
+        }
     }
 }

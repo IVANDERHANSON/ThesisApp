@@ -17,6 +17,9 @@ namespace ThesisApp.Helper
             CreateMap<MentorPair, MentorPairDTO>();
             CreateMap<MentorPairDTO, MentorPair>();
 
+            CreateMap<MentorPair, MentorPairCreationDTO>();
+            CreateMap<MentorPairCreationDTO, MentorPair>();
+
             CreateMap<MentoringSession, MentoringSessionDTO>();
             CreateMap<MentoringSessionDTO, MentoringSession>();
 

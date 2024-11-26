@@ -9,5 +9,7 @@ namespace ThesisApp.Interfaces
         bool MentorPairExists(int id);
         User GetStudent(int preThesisId);
         ICollection<User> GetMentorLecturers();
+        bool CreateMentorPair(MentorPair mentorPair);
+        bool Save();
     }
 }

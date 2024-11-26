@@ -13,11 +13,15 @@ namespace ThesisApp.Controllers
     {
         private readonly IMentorPairRepository _mentorPairRepository;
         private readonly IMapper _mapper;
+        private readonly IPreThesisRepository _preThesisRepository;
+        private readonly IUserRepository _userRepository;
 
-        public MentorPairController(IMentorPairRepository mentorPairRepository, IMapper mapper)
+        public MentorPairController(IMentorPairRepository mentorPairRepository, IMapper mapper, IPreThesisRepository preThesisRepository, IUserRepository userRepository)
         {
             _mentorPairRepository = mentorPairRepository;
             _mapper = mapper;
+            _preThesisRepository = preThesisRepository;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
@@ -87,6 +91,43 @@ namespace ThesisApp.Controllers
             }
 
             return Ok(users);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreateMentorPair([FromBody] MentorPairCreationDTO mentorPairCreationDTO)
+        {
+            if (mentorPairCreationDTO == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_preThesisRepository.PreThesisExists(mentorPairCreationDTO.PreThesisId) || !_userRepository.UserExists(mentorPairCreationDTO.MentorLecturerId))
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _userRepository.GetUser(mentorPairCreationDTO.MentorLecturerId);
+            if (user.Role != "Lecturer")
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var mentorPair = _mapper.Map<MentorPair>(mentorPairCreationDTO);
+
+            if (!_mentorPairRepository.CreateMentorPair(mentorPair))
+            {
+                ModelState.AddModelError("", "Something went wrong while creating Mentor Pair.");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok("Mentor Pair successfully created.");
         }
     }
 }

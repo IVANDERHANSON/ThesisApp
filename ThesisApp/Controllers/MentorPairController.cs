@@ -127,7 +127,10 @@ namespace ThesisApp.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Mentor Pair successfully created.");
+            return Ok(new ResponseDTO
+            {
+                Message = "Mentor Pair successfully created."
+            });
         }
     }
 }

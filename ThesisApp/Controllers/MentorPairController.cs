@@ -132,5 +132,37 @@ namespace ThesisApp.Controllers
                 Message = "Mentor Pair successfully created."
             });
         }
+
+        [HttpGet("/api/MentorPair/edit/get-student/{studentId}")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(400)]
+        public IActionResult GetStudentForEditMentorPair(int studentId)
+        {
+            if (_userRepository.UserExists(studentId))
+            {
+                if(_userRepository.GetUser(studentId).Role == "Student")
+                {
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    var user = _mapper.Map<UserDTO>(_mentorPairRepository.GetStudentForEditMentorPair(studentId));
+
+                    if (user.PreThesis == null || user.PreThesis.MentorPair == null)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    return Ok(user);
+                } else
+                {
+                    return BadRequest(ModelState);
+                }
+            } else
+            {
+                return BadRequest(ModelState);
+            }
+        }
     }
 }

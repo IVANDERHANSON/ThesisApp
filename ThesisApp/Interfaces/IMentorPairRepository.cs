@@ -11,5 +11,6 @@ namespace ThesisApp.Interfaces
         ICollection<User> GetMentorLecturers();
         bool CreateMentorPair(MentorPair mentorPair);
         bool Save();
+        User GetStudentForEditMentorPair(int studentId);
     }
 }

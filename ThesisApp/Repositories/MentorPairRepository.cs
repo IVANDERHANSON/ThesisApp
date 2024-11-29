@@ -61,5 +61,10 @@ namespace ThesisApp.Repositories
             var saved = _dataContext.SaveChanges();
             return saved > 0 ? true : false;
         }
+
+        public User GetStudentForEditMentorPair(int studentId)
+        {
+            return _dataContext.Users.Where(u => u.id == studentId).Include(u => u.PreThesis).Include(u => u.PreThesis.MentorPair).FirstOrDefault();
+        }
     }
 }

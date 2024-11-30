@@ -48,7 +48,7 @@ namespace ThesisApp.Repositories
 
         public User GetStudent(int thesisId)
         {
-            if (_dataContext.Theses.Any(t => t.id == thesisId) && !_dataContext.ThesisDefences.Any(td => td.ThesisId == thesisId))
+            if (_dataContext.Theses.Any(t => t.id == thesisId) && !ThesisIdExists(thesisId))
             {
                 return _dataContext.Users.Where(u => u.Thesis.id == thesisId).Include(u => u.PreThesis).Include(u => u.PreThesis.MentorPair).Include(u => u.Thesis).FirstOrDefault();
             }

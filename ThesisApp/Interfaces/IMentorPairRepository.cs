@@ -12,5 +12,6 @@ namespace ThesisApp.Interfaces
         bool CreateMentorPair(MentorPair mentorPair);
         bool Save();
         User GetStudentForEditMentorPair(int studentId);
+        bool UpdateMentorPair(int mentorPairId, MentorPair mentorPair);
     }
 }

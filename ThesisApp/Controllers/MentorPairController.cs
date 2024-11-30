@@ -164,5 +164,50 @@ namespace ThesisApp.Controllers
                 return BadRequest(ModelState);
             }
         }
+
+        [HttpPut("/api/MentorPair/edit/{mentorPairId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateMentorPair(int mentorPairId, [FromBody] MentorPairCreationDTO updatedMentorPair)
+        {
+            if (updatedMentorPair == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_mentorPairRepository.MentorPairExists(mentorPairId)) {
+                return NotFound();
+            }
+
+            if (!_preThesisRepository.PreThesisExists(updatedMentorPair.PreThesisId) || !_userRepository.UserExists(updatedMentorPair.MentorLecturerId))
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _userRepository.GetUser(updatedMentorPair.MentorLecturerId);
+            if (user.Role != "Lecturer")
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var mentorPair = _mapper.Map<MentorPair>(updatedMentorPair);
+
+            if (!_mentorPairRepository.UpdateMentorPair(mentorPairId, mentorPair))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating Mentor Pair.");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok(new ResponseDTO
+            {
+                Message = "Mentor Pair successfully updated."
+            });
+        }
     }
 }

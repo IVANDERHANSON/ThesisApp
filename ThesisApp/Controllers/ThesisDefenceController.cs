@@ -58,6 +58,51 @@ namespace ThesisApp.Controllers
             return Ok(thesisDefence);
         }
 
+        [HttpGet("/api/ThesisDefence/get-student/{thesisId}")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(400)]
+        public IActionResult GetStudent(int thesisId)
+        {
+            var user = _mapper.Map<UserDTO>(_thesisDefenceRepository.GetStudent(thesisId));
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(user);
+        }
+
+        [HttpGet("/api/ThesisDefence/get-examiner-lecturers/{mentorLecturerId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetExaminerLecturers(int mentorLecturerId)
+        {
+            if (!_userRepository.UserExists(mentorLecturerId))
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (_userRepository.GetUser(mentorLecturerId).Role != "Lecturer")
+            {
+                return BadRequest(ModelState);
+            }
+            
+            var examinerLecturers = _mapper.Map<List<UserDTO>>(_thesisDefenceRepository.GetExaminerLecturers(mentorLecturerId));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(examinerLecturers);
+        }
+
         [HttpPost]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]

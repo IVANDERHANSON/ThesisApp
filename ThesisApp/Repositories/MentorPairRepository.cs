@@ -30,7 +30,7 @@ namespace ThesisApp.Repositories
 
         public User GetStudent(int preThesisId)
         {
-            if (_dataContext.PreTheses.Any(t => t.id == preThesisId) && !_dataContext.MentorPairs.Any(mp => mp.PreThesisId == preThesisId))
+            if (_dataContext.PreTheses.Any(pt => pt.id == preThesisId) && !_dataContext.MentorPairs.Any(mp => mp.PreThesisId == preThesisId))
             {
                 return _dataContext.Users.Where(u => u.PreThesis.id == preThesisId).Include(u => u.PreThesis).FirstOrDefault();
             } else

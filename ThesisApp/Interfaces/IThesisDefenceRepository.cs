@@ -10,5 +10,7 @@ namespace ThesisApp.Interfaces
         bool ThesisIdExists(int ThesisId);
         bool CreateThesisDefence(ThesisDefence thesisDefence);
         bool Save();
+        User GetStudent(int thesisId);
+        ICollection<User> GetExaminerLecturers(int mentorLecturerId);
     }
 }

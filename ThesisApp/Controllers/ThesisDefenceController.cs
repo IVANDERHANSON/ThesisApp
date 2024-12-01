@@ -141,7 +141,10 @@ namespace ThesisApp.Controllers
                 return StatusCode(500, ModelState);
             }
 
-            return Ok("Thesis Defence successfully created.");
+            return Ok(new ResponseDTO
+            {
+                Message = "Thesis Defence successfully created."
+            });
         }
     }
 }

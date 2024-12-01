@@ -118,7 +118,12 @@ namespace ThesisApp.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (_thesisDefenceRepository.ThesisIdExists(thesisDefenceCreationDTO.ThesisId))
+            if (_thesisDefenceRepository.ThesisIdExists(thesisDefenceCreationDTO.ThesisId) || _thesisDefenceRepository.MentorLecturerIdExists(thesisDefenceCreationDTO.MentorLecturerId) || _thesisDefenceRepository.ExaminerLecturerIdExists(thesisDefenceCreationDTO.ExaminerLecturerId))
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (thesisDefenceCreationDTO.MentorLecturerId == thesisDefenceCreationDTO.ExaminerLecturerId)
             {
                 return BadRequest(ModelState);
             }

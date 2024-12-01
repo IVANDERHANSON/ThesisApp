@@ -8,6 +8,8 @@ namespace ThesisApp.Interfaces
         ThesisDefence GetThesisDefence(int id);
         bool ThesisDefenceExists(int id);
         bool ThesisIdExists(int ThesisId);
+        bool MentorLecturerIdExists(int MentorLecturerId);
+        bool ExaminerLecturerIdExists(int ExaminerLecturerId);
         bool CreateThesisDefence(ThesisDefence thesisDefence);
         bool Save();
         User GetStudent(int thesisId);

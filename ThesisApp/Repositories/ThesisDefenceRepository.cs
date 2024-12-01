@@ -33,6 +33,16 @@ namespace ThesisApp.Repositories
             return _dataContext.ThesisDefences.Any(td => td.ThesisId == ThesisId);
         }
 
+        public bool MentorLecturerIdExists(int MentorLecturerId)
+        {
+            return _dataContext.ThesisDefences.Any(td => td.MentorLecturerId == MentorLecturerId);
+        }
+
+        public bool ExaminerLecturerIdExists(int ExaminerLecturerId)
+        {
+            return _dataContext.ThesisDefences.Any(td => td.ExaminerLecturerId == ExaminerLecturerId);
+        }
+
         public bool CreateThesisDefence(ThesisDefence thesisDefence)
         {
             _dataContext.Add(thesisDefence);

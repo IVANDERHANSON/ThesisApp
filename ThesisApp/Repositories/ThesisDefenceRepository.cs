@@ -72,5 +72,32 @@ namespace ThesisApp.Repositories
         {
             return _dataContext.Users.Where(u => u.Role == "Lecturer" && mentorLecturerId != u.id && u.ThesisDefenceForExaminer.ExaminerLecturerId != u.id).OrderBy(u => u.id).ToList();
         }
+
+        public bool UpdateThesisDefence(int thesisDefenceId, ThesisDefence thesisDefence)
+        {
+            var oldThesisDefence = _dataContext.ThesisDefences.Where(td => td.id == thesisDefenceId).FirstOrDefault();
+
+            if (thesisDefence.ExaminerLecturerId == oldThesisDefence.ExaminerLecturerId)
+            {
+                oldThesisDefence.ExaminerLecturerId = thesisDefence.ExaminerLecturerId;
+                oldThesisDefence.Schedule = thesisDefence.Schedule;
+                oldThesisDefence.MeetingLink = thesisDefence.MeetingLink;
+                _dataContext.SaveChanges();
+                return true;
+            } else if (_dataContext.ThesisDefences.Any(td => td.ExaminerLecturerId == thesisDefence.ExaminerLecturerId))
+            {
+                return false;
+            }
+
+            oldThesisDefence.ExaminerLecturerId = thesisDefence.ExaminerLecturerId;
+            oldThesisDefence.Schedule = thesisDefence.Schedule;
+            oldThesisDefence.MeetingLink = thesisDefence.MeetingLink;
+            return Save();
+        }
+
+        public User GetStudentForEditThesisDefence(int studentId)
+        {
+            return _dataContext.Users.Where(u => u.id == studentId).Include(u => u.Thesis).Include(u => u.Thesis.ThesisDefence).FirstOrDefault();
+        }
     }
 }

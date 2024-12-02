@@ -146,5 +146,78 @@ namespace ThesisApp.Controllers
                 Message = "Thesis Defence successfully created."
             });
         }
+
+        [HttpGet("/api/ThesisDefence/edit/get-student/{studentId}")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(400)]
+        public IActionResult GetStudentForEditThesisDefence(int studentId)
+        {
+            if (_userRepository.UserExists(studentId))
+            {
+                if (_userRepository.GetUser(studentId).Role == "Student")
+                {
+                    if (!ModelState.IsValid)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    var user = _mapper.Map<UserDTO>(_thesisDefenceRepository.GetStudentForEditThesisDefence(studentId));
+
+                    if (user.Thesis == null || user.Thesis.ThesisDefence == null)
+                    {
+                        return BadRequest(ModelState);
+                    }
+
+                    return Ok(user);
+                }
+                else
+                {
+                    return BadRequest(ModelState);
+                }
+            }
+            else
+            {
+                return BadRequest(ModelState);
+            }
+        }
+
+        [HttpPut("/api/ThesisDefence/edit/{thesisDefenceId}")]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult UpdateThesisDefence(int thesisDefenceId, [FromBody] ThesisDefenceCreationDTO updatedThesisDefence)
+        {
+            if (updatedThesisDefence == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_thesisDefenceRepository.ThesisDefenceExists(thesisDefenceId) || !_userRepository.UserExists(updatedThesisDefence.ExaminerLecturerId))
+            {
+                return NotFound();
+            }
+
+            if (updatedThesisDefence.MentorLecturerId == updatedThesisDefence.ExaminerLecturerId)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var thesisDefence = _mapper.Map<ThesisDefence>(updatedThesisDefence);
+            if (!_thesisDefenceRepository.UpdateThesisDefence(thesisDefenceId, thesisDefence))
+            {
+                ModelState.AddModelError("", "Something went wrong while updating Thesis Defence.");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok(new ResponseDTO
+            {
+                Message = "Thesis Defence successfully updated."
+            });
+        }
     }
 }

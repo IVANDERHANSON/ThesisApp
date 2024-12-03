@@ -9,5 +9,6 @@ namespace ThesisApp.Interfaces
         bool UserExists(int id);
         ICollection<User> GetStudents();
         ICollection<User> GetLecturers();
+        User GetUserForStudentDashboard(int  id);
     }
 }

@@ -82,5 +82,25 @@ namespace ThesisApp.Controllers
 
             return Ok(lecturers);
         }
+
+        [HttpGet("/api/student-dashboard/{id}")]
+        [ProducesResponseType(200, Type = typeof(User))]
+        [ProducesResponseType(400)]
+        public IActionResult GetUserForStudentDashboard(int id)
+        {
+            if (!_userRepository.UserExists(id))
+            {
+                return NotFound();
+            }
+
+            var user = _mapper.Map<UserDTO>(_userRepository.GetUserForStudentDashboard(id));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(user);
+        }
     }
 }

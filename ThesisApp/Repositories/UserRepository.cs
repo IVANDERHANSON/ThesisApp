@@ -37,5 +37,10 @@ namespace ThesisApp.Repositories
         {
             return _dataContext.Users.Where(u => u.Role == "Lecturer").OrderBy(u => u.id).ToList();
         }
+
+        public User GetUserForStudentDashboard(int id)
+        {
+            return _dataContext.Users.Where(u => u.id == id).Include(u => u.PreThesis).Include(u => u.PreThesis.MentorPair).Include(u => u.PreThesis.MentorPair.MentoringSessions).Include(u => u.Thesis).Include(u => u.Thesis.ThesisDefence).FirstOrDefault();
+        }
     }
 }

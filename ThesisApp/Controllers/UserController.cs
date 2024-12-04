@@ -83,17 +83,22 @@ namespace ThesisApp.Controllers
             return Ok(lecturers);
         }
 
-        [HttpGet("/api/student-dashboard/{id}")]
+        [HttpGet("/api/student-dashboard/{studentId}")]
         [ProducesResponseType(200, Type = typeof(User))]
         [ProducesResponseType(400)]
-        public IActionResult GetUserForStudentDashboard(int id)
+        public IActionResult GetUserForStudentDashboard(int studentId)
         {
-            if (!_userRepository.UserExists(id))
+            if (!_userRepository.UserExists(studentId))
             {
                 return NotFound();
             }
 
-            var user = _mapper.Map<UserDTO>(_userRepository.GetUserForStudentDashboard(id));
+            if (_userRepository.GetUser(studentId).Role != "Student")
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _mapper.Map<UserDTO>(_userRepository.GetUserForStudentDashboard(studentId));
 
             if (!ModelState.IsValid)
             {
@@ -101,6 +106,31 @@ namespace ThesisApp.Controllers
             }
 
             return Ok(user);
+        }
+
+        [HttpGet("/api/lecturer-dashboard/{lecturerId}")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<User>))]
+        [ProducesResponseType(400)]
+        public IActionResult GetStudentsForLecturerDashboard(int lecturerId)
+        {
+            if (!_userRepository.UserExists(lecturerId))
+            {
+                return NotFound();
+            }
+
+            if (_userRepository.GetUser(lecturerId).Role != "Lecturer")
+            {
+                return BadRequest(ModelState);
+            }
+
+            var students = _mapper.Map<List<UserDTO>>(_userRepository.GetStudentsForLecturerDashboard(lecturerId));
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(students);
         }
     }
 }

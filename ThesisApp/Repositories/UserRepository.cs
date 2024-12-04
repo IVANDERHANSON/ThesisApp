@@ -38,9 +38,14 @@ namespace ThesisApp.Repositories
             return _dataContext.Users.Where(u => u.Role == "Lecturer").OrderBy(u => u.id).ToList();
         }
 
-        public User GetUserForStudentDashboard(int id)
+        public User GetUserForStudentDashboard(int studentId)
         {
-            return _dataContext.Users.Where(u => u.id == id).Include(u => u.PreThesis).Include(u => u.PreThesis.MentorPair).Include(u => u.PreThesis.MentorPair.MentoringSessions).Include(u => u.Thesis).Include(u => u.Thesis.ThesisDefence).FirstOrDefault();
+            return _dataContext.Users.Where(u => u.id == studentId).Include(u => u.PreThesis).Include(u => u.PreThesis.MentorPair).Include(u => u.PreThesis.MentorPair.MentoringSessions).Include(u => u.Thesis).Include(u => u.Thesis.ThesisDefence).FirstOrDefault();
+        }
+
+        public ICollection<User> GetStudentsForLecturerDashboard(int lecturerId)
+        {
+            return _dataContext.Users.Where(u => u.PreThesis.MentorPair.MentorLecturerId == lecturerId || u.Thesis.ThesisDefence.ExaminerLecturerId == lecturerId).Include(u => u.PreThesis).Include(u => u.PreThesis.MentorPair).Include(u => u.PreThesis.MentorPair.MentoringSessions).Include(u => u.Thesis).Include(u => u.Thesis.ThesisDefence).OrderBy(u => u.id).ToList();
         }
     }
 }

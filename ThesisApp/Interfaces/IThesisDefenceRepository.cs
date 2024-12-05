@@ -15,6 +15,7 @@ namespace ThesisApp.Interfaces
         User GetStudent(int thesisId);
         ICollection<User> GetExaminerLecturers(int mentorLecturerId);
         User GetStudentForEditThesisDefence(int studentId);
-        bool UpdateThesisDefence(int thesisDefenceId, ThesisDefence thesisDefence);
+        bool UpdateThesisDefence(ThesisDefence oldThesisDefence, ThesisDefence thesisDefence);
+        bool SameExaminerLecturerId(ThesisDefence oldThesisDefence, ThesisDefence thesisDefence);
     }
 }

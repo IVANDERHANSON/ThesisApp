@@ -46,7 +46,6 @@ namespace ThesisApp.Repositories
         public bool CreateThesisDefence(ThesisDefence thesisDefence)
         {
             _dataContext.Add(thesisDefence);
-
             return Save();
         }
 
@@ -58,14 +57,7 @@ namespace ThesisApp.Repositories
 
         public User GetStudent(int thesisId)
         {
-            if (_dataContext.Theses.Any(t => t.id == thesisId) && !ThesisIdExists(thesisId))
-            {
-                return _dataContext.Users.Where(u => u.Thesis.id == thesisId).Include(u => u.PreThesis).Include(u => u.PreThesis.MentorPair).Include(u => u.Thesis).FirstOrDefault();
-            }
-            else
-            {
-                return null;
-            }
+            return _dataContext.Users.Where(u => u.Thesis.id == thesisId).Include(u => u.PreThesis).Include(u => u.PreThesis.MentorPair).Include(u => u.Thesis).FirstOrDefault();
         }
 
         public ICollection<User> GetExaminerLecturers(int mentorLecturerId)
@@ -73,26 +65,21 @@ namespace ThesisApp.Repositories
             return _dataContext.Users.Where(u => u.Role == "Lecturer" && mentorLecturerId != u.id && u.ThesisDefenceForExaminer.ExaminerLecturerId != u.id).OrderBy(u => u.id).ToList();
         }
 
-        public bool UpdateThesisDefence(int thesisDefenceId, ThesisDefence thesisDefence)
+        public bool UpdateThesisDefence(ThesisDefence oldThesisDefence, ThesisDefence thesisDefence)
         {
-            var oldThesisDefence = _dataContext.ThesisDefences.Where(td => td.id == thesisDefenceId).FirstOrDefault();
-
-            if (thesisDefence.ExaminerLecturerId == oldThesisDefence.ExaminerLecturerId)
-            {
-                oldThesisDefence.ExaminerLecturerId = thesisDefence.ExaminerLecturerId;
-                oldThesisDefence.Schedule = thesisDefence.Schedule;
-                oldThesisDefence.MeetingLink = thesisDefence.MeetingLink;
-                _dataContext.SaveChanges();
-                return true;
-            } else if (_dataContext.ThesisDefences.Any(td => td.ExaminerLecturerId == thesisDefence.ExaminerLecturerId))
-            {
-                return false;
-            }
-
             oldThesisDefence.ExaminerLecturerId = thesisDefence.ExaminerLecturerId;
             oldThesisDefence.Schedule = thesisDefence.Schedule;
             oldThesisDefence.MeetingLink = thesisDefence.MeetingLink;
             return Save();
+        }
+
+        public bool SameExaminerLecturerId(ThesisDefence oldThesisDefence, ThesisDefence thesisDefence)
+        {
+            oldThesisDefence.ExaminerLecturerId = thesisDefence.ExaminerLecturerId;
+            oldThesisDefence.Schedule = thesisDefence.Schedule;
+            oldThesisDefence.MeetingLink = thesisDefence.MeetingLink;
+            _dataContext.SaveChanges();
+            return true;
         }
 
         public User GetStudentForEditThesisDefence(int studentId)

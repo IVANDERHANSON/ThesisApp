@@ -63,19 +63,19 @@ namespace ThesisApp.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetStudent(int thesisId)
         {
-            var user = _mapper.Map<UserDTO>(_thesisDefenceRepository.GetStudent(thesisId));
-
-            if (user == null)
+            if (_thesisRepository.ThesisExists(thesisId) && !_thesisDefenceRepository.ThesisIdExists(thesisId))
             {
+                var user = _mapper.Map<UserDTO>(_thesisDefenceRepository.GetStudent(thesisId));
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                return Ok(user);
+            } else {
                 return NotFound();
             }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            return Ok(user);
         }
 
         [HttpGet("/api/ThesisDefence/get-examiner-lecturers/{mentorLecturerId}")]
@@ -208,16 +208,31 @@ namespace ThesisApp.Controllers
             }
 
             var thesisDefence = _mapper.Map<ThesisDefence>(updatedThesisDefence);
-            if (!_thesisDefenceRepository.UpdateThesisDefence(thesisDefenceId, thesisDefence))
+            var oldThesisDefence = _thesisDefenceRepository.GetThesisDefence(thesisDefenceId);
+            var validated = false;
+
+            if (thesisDefence.ExaminerLecturerId == oldThesisDefence.ExaminerLecturerId)
+            {
+                validated = _thesisDefenceRepository.SameExaminerLecturerId(oldThesisDefence, thesisDefence);
+            } else if (_thesisDefenceRepository.ExaminerLecturerIdExists(thesisDefence.ExaminerLecturerId))
+            {
+                validated = false;
+            } else
+            {
+                validated = _thesisDefenceRepository.UpdateThesisDefence(oldThesisDefence, thesisDefence);
+            }
+
+            if (validated)
+            {
+                return Ok(new ResponseDTO
+                {
+                    Message = "Thesis Defence successfully updated."
+                });
+            } else
             {
                 ModelState.AddModelError("", "Something went wrong while updating Thesis Defence.");
                 return StatusCode(500, ModelState);
             }
-
-            return Ok(new ResponseDTO
-            {
-                Message = "Thesis Defence successfully updated."
-            });
         }
     }
 }

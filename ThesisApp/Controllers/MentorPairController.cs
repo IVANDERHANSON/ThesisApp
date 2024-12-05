@@ -63,19 +63,19 @@ namespace ThesisApp.Controllers
         [ProducesResponseType(400)]
         public IActionResult GetStudent(int preThesisId)
         {
-            var user = _mapper.Map<UserDTO>(_mentorPairRepository.GetStudent(preThesisId));
-
-            if (user == null)
+            if (_preThesisRepository.PreThesisExists(preThesisId) && !_mentorPairRepository.PreThesisIdExists(preThesisId))
             {
+                var user = _mapper.Map<UserDTO>(_mentorPairRepository.GetStudent(preThesisId));
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                return Ok(user);
+            } else {
                 return NotFound();
             }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            return Ok(user);
         }
 
         [HttpGet("/api/MentorPair/get-mentor-lecturers")]
@@ -121,7 +121,7 @@ namespace ThesisApp.Controllers
 
             var mentorPair = _mapper.Map<MentorPair>(mentorPairCreationDTO);
 
-            if (!_mentorPairRepository.CreateMentorPair(mentorPair))
+            if (_mentorPairRepository.PreThesisIdExists(mentorPair.PreThesisId) || _mentorPairRepository.MentorLecturerIdExists(mentorPair.MentorLecturerId) || !_mentorPairRepository.CreateMentorPair(mentorPair))
             {
                 ModelState.AddModelError("", "Something went wrong while creating Mentor Pair.");
                 return StatusCode(500, ModelState);
@@ -197,17 +197,34 @@ namespace ThesisApp.Controllers
             }
 
             var mentorPair = _mapper.Map<MentorPair>(updatedMentorPair);
+            var oldMentorPair = _mentorPairRepository.GetMentorPair(mentorPairId);
+            var validated = false;
 
-            if (!_mentorPairRepository.UpdateMentorPair(mentorPairId, mentorPair))
+            if (mentorPair.PreThesisId != oldMentorPair.PreThesisId)
+            {
+                validated = false;
+            } else if (mentorPair.MentorLecturerId == oldMentorPair.MentorLecturerId)
+            {
+                validated = _mentorPairRepository.SameMentorLecturerId(oldMentorPair, mentorPair);
+            } else if (_mentorPairRepository.MentorLecturerIdExists(mentorPair.MentorLecturerId))
+            {
+                validated = false;
+            } else
+            {
+                validated = _mentorPairRepository.UpdateMentorPair(oldMentorPair, mentorPair);
+            }
+
+            if (validated)
+            {
+                return Ok(new ResponseDTO
+                {
+                    Message = "Mentor Pair successfully updated."
+                });
+            } else
             {
                 ModelState.AddModelError("", "Something went wrong while updating Mentor Pair.");
                 return StatusCode(500, ModelState);
             }
-
-            return Ok(new ResponseDTO
-            {
-                Message = "Mentor Pair successfully updated."
-            });
         }
     }
 }

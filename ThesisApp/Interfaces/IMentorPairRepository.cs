@@ -7,11 +7,14 @@ namespace ThesisApp.Interfaces
         ICollection<MentorPair> GetMentorPairs();
         MentorPair GetMentorPair(int id);
         bool MentorPairExists(int id);
+        bool PreThesisIdExists(int preThesisId);
         User GetStudent(int preThesisId);
         ICollection<User> GetMentorLecturers();
+        bool MentorLecturerIdExists(int mentorLecturerId);
         bool CreateMentorPair(MentorPair mentorPair);
         bool Save();
         User GetStudentForEditMentorPair(int studentId);
-        bool UpdateMentorPair(int mentorPairId, MentorPair mentorPair);
+        bool UpdateMentorPair(MentorPair oldMentorPair, MentorPair mentorPair);
+        bool SameMentorLecturerId(MentorPair oldMentorPair, MentorPair mentorPair);
     }
 }

@@ -28,15 +28,14 @@ namespace ThesisApp.Repositories
             return _dataContext.MentorPairs.Any(mp => mp.id == id);
         }
 
+        public bool PreThesisIdExists(int preThesisId)
+        {
+            return _dataContext.MentorPairs.Any(mp => mp.PreThesisId == preThesisId);
+        }
+
         public User GetStudent(int preThesisId)
         {
-            if (_dataContext.PreTheses.Any(pt => pt.id == preThesisId) && !_dataContext.MentorPairs.Any(mp => mp.PreThesisId == preThesisId))
-            {
-                return _dataContext.Users.Where(u => u.PreThesis.id == preThesisId).Include(u => u.PreThesis).FirstOrDefault();
-            } else
-            {
-                return null;
-            }
+            return _dataContext.Users.Where(u => u.PreThesis.id == preThesisId).Include(u => u.PreThesis).FirstOrDefault();
         }
 
         public ICollection<User> GetMentorLecturers()
@@ -44,16 +43,15 @@ namespace ThesisApp.Repositories
             return _dataContext.Users.Where(u => u.Role == "Lecturer" && u.MentorPair.MentorLecturerId != u.id).OrderBy(u => u.id).ToList();
         }
 
+        public bool MentorLecturerIdExists(int mentorLecturerId)
+        {
+            return _dataContext.MentorPairs.Any(mp => mp.MentorLecturerId == mentorLecturerId);
+        }
+
         public bool CreateMentorPair(MentorPair mentorPair)
         {
-            if (!_dataContext.MentorPairs.Any(mp => mp.PreThesisId == mentorPair.PreThesisId) && !_dataContext.MentorPairs.Any(mp => mp.MentorLecturerId == mentorPair.MentorLecturerId))
-            {
-                _dataContext.Add(mentorPair);
-                return Save();
-            } else
-            {
-                return false;
-            }
+            _dataContext.Add(mentorPair);
+            return Save();
         }
 
         public bool Save()
@@ -67,24 +65,17 @@ namespace ThesisApp.Repositories
             return _dataContext.Users.Where(u => u.id == studentId).Include(u => u.PreThesis).Include(u => u.PreThesis.MentorPair).FirstOrDefault();
         }
 
-        public bool UpdateMentorPair(int mentorPairId, MentorPair mentorPair)
+        public bool UpdateMentorPair(MentorPair oldMentorPair, MentorPair mentorPair)
         {
-            var oldMentorPair = _dataContext.MentorPairs.Where(mp => mp.id == mentorPairId).FirstOrDefault();
-            if (mentorPair.PreThesisId != oldMentorPair.PreThesisId)
-            {
-                return false;
-            } else if (mentorPair.MentorLecturerId == oldMentorPair.MentorLecturerId)
-            {
-                oldMentorPair.MentorLecturerId = mentorPair.MentorLecturerId;
-                _dataContext.SaveChanges();
-                return true;
-            } else if (_dataContext.MentorPairs.Any(mp => mp.MentorLecturerId == mentorPair.MentorLecturerId))
-            {
-                return false;
-            }
-
             oldMentorPair.MentorLecturerId = mentorPair.MentorLecturerId;
             return Save();
+        }
+
+        public bool SameMentorLecturerId(MentorPair oldMentorPair, MentorPair mentorPair)
+        {
+            oldMentorPair.MentorLecturerId = mentorPair.MentorLecturerId;
+            _dataContext.SaveChanges();
+            return true;
         }
     }
 }

@@ -30,11 +30,6 @@ namespace ThesisApp.Controllers
         {
             var thesisDefences = _mapper.Map<List<ThesisDefenceDTO>>(_thesisDefenceRepository.GetThesisDefences());
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(thesisDefences);
         }
 
@@ -50,11 +45,6 @@ namespace ThesisApp.Controllers
 
             var thesisDefence = _mapper.Map<ThesisDefenceDTO>(_thesisDefenceRepository.GetThesisDefence(id));
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(thesisDefence);
         }
 
@@ -66,11 +56,6 @@ namespace ThesisApp.Controllers
             if (_thesisRepository.ThesisExists(thesisId) && !_thesisDefenceRepository.ThesisIdExists(thesisId))
             {
                 var user = _mapper.Map<UserDTO>(_thesisDefenceRepository.GetStudent(thesisId));
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
 
                 return Ok(user);
             } else {
@@ -95,11 +80,6 @@ namespace ThesisApp.Controllers
             
             var examinerLecturers = _mapper.Map<List<UserDTO>>(_thesisDefenceRepository.GetExaminerLecturers(mentorLecturerId));
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(examinerLecturers);
         }
 
@@ -109,6 +89,11 @@ namespace ThesisApp.Controllers
         public IActionResult CreateThesisDefence([FromBody] ThesisDefenceCreationDTO thesisDefenceCreationDTO)
         {
             if (thesisDefenceCreationDTO == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -124,11 +109,6 @@ namespace ThesisApp.Controllers
             }
 
             if (thesisDefenceCreationDTO.MentorLecturerId == thesisDefenceCreationDTO.ExaminerLecturerId)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -156,11 +136,6 @@ namespace ThesisApp.Controllers
             {
                 if (_userRepository.GetUser(studentId).Role == "Student")
                 {
-                    if (!ModelState.IsValid)
-                    {
-                        return BadRequest(ModelState);
-                    }
-
                     var user = _mapper.Map<UserDTO>(_thesisDefenceRepository.GetStudentForEditThesisDefence(studentId));
 
                     if (user.Thesis == null || user.Thesis.ThesisDefence == null)
@@ -192,17 +167,17 @@ namespace ThesisApp.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (!_thesisDefenceRepository.ThesisDefenceExists(thesisDefenceId) || !_userRepository.UserExists(updatedThesisDefence.ExaminerLecturerId))
             {
                 return NotFound();
             }
 
             if (updatedThesisDefence.MentorLecturerId == updatedThesisDefence.ExaminerLecturerId)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }

@@ -28,11 +28,6 @@ namespace ThesisApp.Controllers
         {
             var mentoringSessions = _mapper.Map<List<MentoringSessionDTO>>(_mentoringSessionRepository.GetMentoringSessions());
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(mentoringSessions);
         }
 
@@ -48,11 +43,6 @@ namespace ThesisApp.Controllers
 
             var mentoringSession = _mapper.Map<MentoringSessionDTO>(_mentoringSessionRepository.GetMentoringSession(id));
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(mentoringSession);
         }
 
@@ -67,11 +57,6 @@ namespace ThesisApp.Controllers
             }
 
             var mentoringSessions = _mapper.Map<List<MentoringSessionDTO>>(_mentoringSessionRepository.GetMentoringSessionsByMentorPairId(mentorPairId));
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             return Ok(mentoringSessions);
         }

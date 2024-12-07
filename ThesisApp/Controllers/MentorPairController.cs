@@ -30,11 +30,6 @@ namespace ThesisApp.Controllers
         {
             var mentorPairs = _mapper.Map<List<MentorPairDTO>>(_mentorPairRepository.GetMentorPairs());
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(mentorPairs);
         }
 
@@ -50,11 +45,6 @@ namespace ThesisApp.Controllers
 
             var mentorPair = _mapper.Map<MentorPairDTO>(_mentorPairRepository.GetMentorPair(id));
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(mentorPair);
         }
 
@@ -66,11 +56,6 @@ namespace ThesisApp.Controllers
             if (_preThesisRepository.PreThesisExists(preThesisId) && !_mentorPairRepository.PreThesisIdExists(preThesisId))
             {
                 var user = _mapper.Map<UserDTO>(_mentorPairRepository.GetStudent(preThesisId));
-
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
 
                 return Ok(user);
             } else {
@@ -85,11 +70,6 @@ namespace ThesisApp.Controllers
         {
             var users = _mapper.Map<List<UserDTO>>(_mentorPairRepository.GetMentorLecturers());
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(users);
         }
 
@@ -103,6 +83,11 @@ namespace ThesisApp.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (!_preThesisRepository.PreThesisExists(mentorPairCreationDTO.PreThesisId) || !_userRepository.UserExists(mentorPairCreationDTO.MentorLecturerId))
             {
                 return BadRequest(ModelState);
@@ -110,11 +95,6 @@ namespace ThesisApp.Controllers
 
             var user = _userRepository.GetUser(mentorPairCreationDTO.MentorLecturerId);
             if (user.Role != "Lecturer")
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
@@ -142,11 +122,6 @@ namespace ThesisApp.Controllers
             {
                 if(_userRepository.GetUser(studentId).Role == "Student")
                 {
-                    if (!ModelState.IsValid)
-                    {
-                        return BadRequest(ModelState);
-                    }
-
                     var user = _mapper.Map<UserDTO>(_mentorPairRepository.GetStudentForEditMentorPair(studentId));
 
                     if (user.PreThesis == null || user.PreThesis.MentorPair == null)
@@ -176,6 +151,11 @@ namespace ThesisApp.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (!_mentorPairRepository.MentorPairExists(mentorPairId)) {
                 return NotFound();
             }
@@ -187,11 +167,6 @@ namespace ThesisApp.Controllers
 
             var user = _userRepository.GetUser(updatedMentorPair.MentorLecturerId);
             if (user.Role != "Lecturer")
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }

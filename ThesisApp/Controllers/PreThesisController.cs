@@ -28,11 +28,6 @@ namespace ThesisApp.Controllers
         {
             var preTheses = _mapper.Map<List<PreThesisDTO>>(_preThesisRepository.GetPreTheses());
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(preTheses);
         }
 
@@ -48,11 +43,6 @@ namespace ThesisApp.Controllers
 
             var preThesis = _mapper.Map<PreThesisDTO>(_preThesisRepository.GetPreThesis(id));
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(preThesis);
         }
 
@@ -66,6 +56,11 @@ namespace ThesisApp.Controllers
                 return BadRequest(ModelState);
             }
 
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             if (!_userRepository.UserExists(preThesisCreationDTO.StudentId))
             {
                 return BadRequest(ModelState);
@@ -73,11 +68,6 @@ namespace ThesisApp.Controllers
 
             var user = _userRepository.GetUser(preThesisCreationDTO.StudentId);
             if (user.Role != "Student")
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }

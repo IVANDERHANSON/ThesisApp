@@ -25,11 +25,6 @@ namespace ThesisApp.Controllers
         {
             var users = _mapper.Map<List<UserDTO>>(_userRepository.GetUsers());
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(users);
         }
 
@@ -45,11 +40,6 @@ namespace ThesisApp.Controllers
 
             var user = _mapper.Map<UserDTO>(_userRepository.GetUser(id));
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(user);
         }
 
@@ -60,11 +50,6 @@ namespace ThesisApp.Controllers
         {
             var students = _mapper.Map<List<UserDTO>>(_userRepository.GetStudents());
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(students);
         }
 
@@ -74,11 +59,6 @@ namespace ThesisApp.Controllers
         public IActionResult GetLecturers()
         {
             var lecturers = _mapper.Map<List<UserDTO>>(_userRepository.GetLecturers());
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             return Ok(lecturers);
         }
@@ -100,11 +80,6 @@ namespace ThesisApp.Controllers
 
             var user = _mapper.Map<UserDTO>(_userRepository.GetUserForStudentDashboard(studentId));
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             return Ok(user);
         }
 
@@ -124,11 +99,6 @@ namespace ThesisApp.Controllers
             }
 
             var students = _mapper.Map<List<UserDTO>>(_userRepository.GetStudentsForLecturerDashboard(lecturerId));
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
             return Ok(students);
         }

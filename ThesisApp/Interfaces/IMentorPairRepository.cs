@@ -16,5 +16,6 @@ namespace ThesisApp.Interfaces
         User GetStudentForEditMentorPair(int studentId);
         bool UpdateMentorPair(MentorPair oldMentorPair, MentorPair mentorPair);
         bool SameMentorLecturerId(MentorPair oldMentorPair, MentorPair mentorPair);
+        MentorPair GetMentorPairByPreThesisId(int preThesisId);
     }
 }

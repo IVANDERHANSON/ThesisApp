@@ -14,6 +14,9 @@ namespace ThesisApp.Helper
             CreateMap<PreThesis, PreThesisDTO>();
             CreateMap<PreThesisDTO, PreThesis>();
 
+            CreateMap<PreThesis, PreThesisCreationDTO>();
+            CreateMap<PreThesisCreationDTO, PreThesis>();
+
             CreateMap<MentorPair, MentorPairDTO>();
             CreateMap<MentorPairDTO, MentorPair>();
 
@@ -25,6 +28,9 @@ namespace ThesisApp.Helper
 
             CreateMap<Thesis, ThesisDTO>();
             CreateMap<ThesisDTO, Thesis>();
+
+            CreateMap<Thesis, ThesisCreationDTO>();
+            CreateMap<ThesisCreationDTO, Thesis>();
 
             CreateMap<ThesisDefence, ThesisDefenceDTO>();
             CreateMap<ThesisDefenceDTO, ThesisDefence>();

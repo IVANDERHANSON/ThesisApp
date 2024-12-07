@@ -13,11 +13,13 @@ namespace ThesisApp.Controllers
     {
         private readonly IPreThesisRepository _preThesisRepository;
         private readonly IMapper _mapper;
+        private readonly IUserRepository _userRepository;
 
-        public PreThesisController(IPreThesisRepository preThesisRepository, IMapper mapper)
+        public PreThesisController(IPreThesisRepository preThesisRepository, IMapper mapper, IUserRepository userRepository)
         {
             _preThesisRepository = preThesisRepository;
             _mapper = mapper;
+            _userRepository = userRepository;
         }
 
         [HttpGet]
@@ -52,6 +54,45 @@ namespace ThesisApp.Controllers
             }
 
             return Ok(preThesis);
+        }
+
+        [HttpPost]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        public IActionResult CreatePreThesis([FromBody] PreThesisCreationDTO preThesisCreationDTO)
+        {
+            if (preThesisCreationDTO == null)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!_userRepository.UserExists(preThesisCreationDTO.StudentId))
+            {
+                return BadRequest(ModelState);
+            }
+
+            var user = _userRepository.GetUser(preThesisCreationDTO.StudentId);
+            if (user.Role != "Student")
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var preThesis = _mapper.Map<PreThesis>(preThesisCreationDTO);
+            if (_preThesisRepository.StudentIdExists(preThesis.StudentId) || !_preThesisRepository.CreatePreThesis(preThesis))
+            {
+                ModelState.AddModelError("", "Something went wrong while creating Pre Thesis.");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok(new ResponseDTO
+            {
+                Message = "Pre Thesis successfully created."
+            });
         }
     }
 }

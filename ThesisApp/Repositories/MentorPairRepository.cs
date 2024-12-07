@@ -77,5 +77,10 @@ namespace ThesisApp.Repositories
             _dataContext.SaveChanges();
             return true;
         }
+
+        public MentorPair GetMentorPairByPreThesisId(int preThesisId)
+        {
+            return _dataContext.MentorPairs.Where(mp => mp.PreThesisId == preThesisId).FirstOrDefault();
+        }
     }
 }

@@ -26,5 +26,27 @@ namespace ThesisApp.Repositories
         {
             return _dataContext.PreTheses.Any(pt => pt.id == id);
         }
+
+        public bool StudentIdExists(int studentId)
+        {
+            return _dataContext.PreTheses.Any(pt => pt.StudentId == studentId);
+        }
+
+        public bool CreatePreThesis(PreThesis preThesis)
+        {
+            _dataContext.Add(preThesis);
+            return Save();
+        }
+
+        public bool Save()
+        {
+            var saved = _dataContext.SaveChanges();
+            return saved > 0 ? true : false;
+        }
+
+        public PreThesis GetPreThesisByStudentId(int studentId)
+        {
+            return _dataContext.PreTheses.Where(pt => pt.StudentId == studentId).FirstOrDefault();
+        }
     }
 }

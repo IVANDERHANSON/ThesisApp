@@ -31,5 +31,10 @@ namespace ThesisApp.Repositories
         {
             return _dataContext.MentoringSessions.Where(ms => ms.MentorPairId == mentorPairId).OrderBy(ms => ms.id).ToList();
         }
+
+        public int CountMentoringSessions(int mentorPairId)
+        {
+            return _dataContext.MentoringSessions.Count(ms => ms.MentorPairId == mentorPairId);
+        }
     }
 }

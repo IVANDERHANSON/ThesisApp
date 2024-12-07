@@ -7,5 +7,8 @@ namespace ThesisApp.Interfaces
         ICollection<Thesis> GetTheses();
         Thesis GetThesis(int id);
         bool ThesisExists(int id);
+        bool StudentIdExists(int studentId);
+        bool CreateThesis(Thesis thesis);
+        bool Save();
     }
 }
